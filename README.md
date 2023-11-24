@@ -1,3 +1,9 @@
+# 설치
+### 순서대로 terminal에 입력
+1. npm install
+2. npm run build
+3. npm start
+
 # 사용방법
 
 1. 왼쪽 필드에 JSON파일을 드래그 앤 드롭

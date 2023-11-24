@@ -23,6 +23,7 @@ window.onload = function(){
       originalSchema = JSON.parse(e.target.result); // 파일 내용을 변수에 저장
       schema = JSON.parse(JSON.stringify(originalSchema)); // 파일 내용을 변수에 저장
       resultOutput.innerHTML = '<pre>' + JSON.stringify(schema, null, 2) + `</pre>`; // 파일 내용 출력
+      fakerList.innerHTML = ''
     }
   
     reader.readAsText(files[0]); // 파일 읽기 시작
