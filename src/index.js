@@ -7,8 +7,9 @@ window.onload = function(){
   const nCount = document.getElementById("nCount");
   const generate = document.getElementById("generate");
   const cData = document.getElementById("c-Data");
-  const fakerList = document.getElementById("faker-list");
+  const fakerList = document.getElementById("faker_list");
   
+  let originalSchema = '';
   let schema = '';
   
   function handleFileSelect(evt) {
@@ -19,7 +20,8 @@ window.onload = function(){
     var reader = new FileReader(); // FileReader 객체 생성
   
     reader.onload = function(e) {
-      schema = JSON.parse(e.target.result); // 파일 내용을 변수에 저장
+      originalSchema = JSON.parse(e.target.result); // 파일 내용을 변수에 저장
+      schema = JSON.parse(JSON.stringify(originalSchema)); // 파일 내용을 변수에 저장
       resultOutput.innerHTML = '<pre>' + JSON.stringify(schema, null, 2) + `</pre>`; // 파일 내용 출력
     }
   
@@ -43,25 +45,31 @@ function deleteFieldsWithRef(obj, ref) {
 }
   
   function generateClickEvent(){
-    console.dir(cData.checked);
-    console.dir(nCount.valueAsNumber);
-    console.log(schema);
+    while (fakerList.firstChild){
+      fakerList.firstChild.remove();
+    };
+    if(!schema){
+      alert('JSON 파일 혹은 내용이 없습니다.');
+      return;
+    }
+
+    schema = JSON.parse(JSON.stringify(originalSchema))
+    console.log("schema",schema); // 파일 내용을 변수에 저장
+    console.log("originalSchema",originalSchema); // 파일 내용을 변수에 저장
+
     if(cData.checked){
       if(schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length >0) delete schema.definitions.CustomDataType
       deleteFieldsWithRef(schema, '#/definitions/CustomDataType')
       delete schema.properties.customData;
     }
-    let liList = [];
-    for(let i = 1; i <= nCount.valueAsNumber; i++){
+    let loopNumber = nCount.valueAsNumber ? nCount.valueAsNumber : 1;
+    for(let i = 1; i <= loopNumber; i++){
       JSONSchemaFaker.resolve(schema).then(res => {
-        liList.push(JSON.parse(JSON.stringify(res)));
+        let element = document.createElement('li');
+        element.innerHTML = i + '번째 <br><pre style="border:2px solid green;">' + JSON.stringify(res, null, 2) + `</pre>`
+        fakerList.appendChild(element);
       })
     }
-    liList.forEach(e => {
-      let element = document.createElement('li');
-      element.innerHTML = '<pre style="border:1px solid black;">' + JSON.stringify(e, null, 2) + `</pre>`
-      fakerList.appendChild(element);
-    })
 
   }
   

@@ -1,7 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
 
-const isProduction = process.env.NODE_ENV === 'production'
-
+const isProduction = process.env.NODE_ENV === 'development'
 const config = {
   entry : path.resolve(__dirname, 'src','index.js'),
   output : {
@@ -17,6 +17,12 @@ const config = {
       }
     ]
   },
+  plugins:[
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer :['buffer','Buffer'],
+    }),
+  ],
   resolve : {
     extensions : ['.js'],
     fallback: {
