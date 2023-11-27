@@ -55,8 +55,6 @@ function deleteFieldsWithRef(obj, ref) {
     }
 
     schema = JSON.parse(JSON.stringify(originalSchema))
-    console.log("schema",schema); // 파일 내용을 변수에 저장
-    console.log("originalSchema",originalSchema); // 파일 내용을 변수에 저장
 
     if(cData.checked){
       if(schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length >0) delete schema.definitions.CustomDataType
