@@ -3,7 +3,9 @@
 1. npm install
 2. npm run build
 3. npm start
-
+4. 주소창에 포트번호 3050으로 들어가시면 됩니다.
+    - http://localhost:3050/
+   
 # 사용방법
 
 1. 왼쪽 필드에 JSON파일을 드래그 앤 드롭
