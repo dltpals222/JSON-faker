@@ -68,7 +68,7 @@ function deleteFieldsWithRef(obj, ref) {
     for (let i = 1; i <= loopNumber; i++) {
       let promise = JSONSchemaFaker.resolve(schema).then(res => {
         let element = document.createElement('li');
-        element.innerHTML = '<div style="display:flex; justify-content: space-between;height:1.6em;"><div>' + i + `번째</div> <button type="button">복사</button></div><pre style="border:2px solid green;">` + JSON.stringify(res, null, 2) + `</pre>`
+        element.innerHTML = '<div style="display:flex; justify-content: space-between;height:1.6em;"><div>' + i + `번째</div><div id="alertMessage" class="fade-in-out" style="display:none;">복사되었습니다.</div> <button type="button">복사</button></div><pre style="border:2px solid green;">` + JSON.stringify(res, null, 2) + `</pre>`
         fakerList.appendChild(element);
       })
       promises.push(promise);
@@ -97,15 +97,12 @@ function deleteFieldsWithRef(obj, ref) {
   function inputValueCopy(){
     const buttonId = document.querySelectorAll('#faker_list button');
     const valueId = [...document.querySelectorAll('#faker_list pre')];
-    console.dir(buttonId)
-    console.dir(valueId)
     buttonId.forEach((e,i)=>{
       e.addEventListener('click',()=>{
-        console.dir(e)
-        console.dir(valueId[i])
         navigator.clipboard.writeText(valueId[i].textContent)
         .then(() => {
-          alert((i + 1) + "번째 Faker 내용을 복사하였습니다.")
+          let alertMessage = document.getElementById('alertMessage');
+          alertMessage.style.display = 'block'
         })
         .catch(e => {console.error('복사 실패: ', e), alert('복사 실패: ', e)})
       })

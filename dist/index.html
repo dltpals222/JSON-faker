@@ -12,6 +12,17 @@
       color:white;
       background-color: black;
     }
+
+    input[type="number"], input[type="button"] {
+      color:black;
+      background-color: white;
+
+    }
+
+    li{
+      margin-bottom: 3px;
+    }
+
     #root {
       width: 100vw;
       height: 100vh;
@@ -82,17 +93,22 @@
       align-items: center;
       flex-grow: 1;
     }
-    input[type="number"], input[type="button"] {
-      color:black;
-      background-color: white;
 
-    }
-    li{
-      margin-bottom: 3px;
-    }
     #nCount {
       padding-left: 5px;
     }
+
+    .fade-in-out {
+      animation: fadeInOut 2s ease-in-out forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% {opacity: 0;}
+      20% {opacity: 1;}
+      80% {opacity: 1;}
+      100% {opacity: 0;}
+    }
+
   </style>
 </head>
 <body>
