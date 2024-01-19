@@ -8,6 +8,8 @@ window.onload = function(){
   const generate = document.getElementById("generate");
   const cData = document.getElementById("c-Data");
   const fakerList = document.getElementById("faker_list");
+  const modifyBtn = document.getElementById('modifyBtn'); // JSON 내용 수정 버튼
+  const completeBtn = document.getElementById('completeBtn'); // JSON 내용 수정 완료 버튼
   
   let originalSchema = '';
   let schema = '';
@@ -45,31 +47,69 @@ function deleteFieldsWithRef(obj, ref) {
   }
 }
   
-  function generateClickEvent(){
-    while (fakerList.firstChild){
+  function generateClickEvent() {
+    while (fakerList.firstChild) {
       fakerList.firstChild.remove();
     };
-    if(!schema){
+    if (!schema) {
       alert('JSON 파일 혹은 내용이 없습니다.');
       return;
     }
 
     schema = JSON.parse(JSON.stringify(originalSchema))
 
-    if(cData.checked){
-      if(schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length >0) delete schema.definitions.CustomDataType
+    if (cData.checked) {
+      if (schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length > 0) delete schema.definitions.CustomDataType
       deleteFieldsWithRef(schema, '#/definitions/CustomDataType')
       delete schema.properties.customData;
     }
     let loopNumber = nCount.valueAsNumber ? nCount.valueAsNumber : 1;
-    for(let i = 1; i <= loopNumber; i++){
-      JSONSchemaFaker.resolve(schema).then(res => {
+    let promises = [];
+    for (let i = 1; i <= loopNumber; i++) {
+      let promise = JSONSchemaFaker.resolve(schema).then(res => {
         let element = document.createElement('li');
-        element.innerHTML = i + '번째 <br><pre style="border:2px solid green;">' + JSON.stringify(res, null, 2) + `</pre>`
+        element.innerHTML = '<div style="display:flex; justify-content: space-between;height:1.6em;"><div>' + i + `번째</div> <button type="button">복사</button></div><pre style="border:2px solid green;">` + JSON.stringify(res, null, 2) + `</pre>`
         fakerList.appendChild(element);
       })
+      promises.push(promise);
     }
 
+    Promise.all(promises).then(() => {
+      inputValueCopy()
+    })
+  }
+  
+
+
+  modifyBtn.addEventListener('click', () => {
+    const resultOutputInnerPre = document.querySelector("#resultOutput > pre");
+    resultOutput.setAttribute('contenteditable','true');
+    if(resultOutputInnerPre) resultOutputInnerPre.style.backgroundColor = '#333';
+  })
+  
+  completeBtn.addEventListener('click', () => {
+    const resultOutputInnerPre = document.querySelector("#resultOutput > pre");
+    resultOutput.setAttribute('contenteditable','false');
+    if(resultOutputInnerPre) resultOutputInnerPre.style.backgroundColor = '#000';
+    schema = JSON.parse(JSON.stringify(resultOutput.value))
+  })
+
+  function inputValueCopy(){
+    const buttonId = document.querySelectorAll('#faker_list button');
+    const valueId = [...document.querySelectorAll('#faker_list pre')];
+    console.dir(buttonId)
+    console.dir(valueId)
+    buttonId.forEach((e,i)=>{
+      e.addEventListener('click',()=>{
+        console.dir(e)
+        console.dir(valueId[i])
+        navigator.clipboard.writeText(valueId[i].textContent)
+        .then(() => {
+          alert((i + 1) + "번째 Faker 내용을 복사하였습니다.")
+        })
+        .catch(e => {console.error('복사 실패: ', e), alert('복사 실패: ', e)})
+      })
+    })
   }
   
   dropZ.addEventListener('dragover', handleDragOver, false);

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
-    "start": "node app.js"
+    "start": "node app.js",
+    "restart": "npm run build && npm start"
   },
   "keywords": [],
   "author": "",
