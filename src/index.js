@@ -10,6 +10,8 @@ window.onload = function(){
   const fakerList = document.getElementById("faker_list");
   const modifyBtn = document.getElementById('modifyBtn'); // JSON 내용 수정 버튼
   const completeBtn = document.getElementById('completeBtn'); // JSON 내용 수정 완료 버튼
+  const allCopy = document.getElementById('all-copy'); // 전체복사 버튼
+
   
   let originalSchema = '';
   let schema = '';
@@ -80,19 +82,29 @@ function deleteFieldsWithRef(obj, ref) {
   }
   
 
-
+  // JSON 내용 수정 버튼
   modifyBtn.addEventListener('click', () => {
     const resultOutputInnerPre = document.querySelector("#resultOutput > pre");
     resultOutput.setAttribute('contenteditable','true');
     if(resultOutputInnerPre) resultOutputInnerPre.style.backgroundColor = '#333';
-  })
+  });
   
+  // 수정 완료 버튼
   completeBtn.addEventListener('click', () => {
     const resultOutputInnerPre = document.querySelector("#resultOutput > pre");
     resultOutput.setAttribute('contenteditable','false');
     if(resultOutputInnerPre) resultOutputInnerPre.style.backgroundColor = '#000';
-    schema = JSON.parse(JSON.stringify(resultOutput.value))
-  })
+    schema = JSON.parse(JSON.stringify(resultOutput.value));
+  });
+
+  //전체복사 버튼
+  allCopy.addEventListener('click',() => {
+    const allData = [...document.querySelectorAll('#faker_list pre')].map(e => JSON.parse(e.textContent));
+    console.log(allData);
+    navigator.clipboard.writeText(JSON.stringify(allData, null, 2));
+    // alert('전체 복사 완료되었습니다.');
+    alert('숭배..... ?');
+  });
 
   function inputValueCopy(){
     const buttonId = document.querySelectorAll('#faker_list button');
@@ -108,11 +120,10 @@ function deleteFieldsWithRef(obj, ref) {
         .catch(e => {console.error('복사 실패: ', e), alert('복사 실패: ', e)})
       })
     })
-  }
+  };
   
   dropZ.addEventListener('dragover', handleDragOver, false);
   dropZ.addEventListener('drop', handleFileSelect, false);
   
   generate.addEventListener('click', generateClickEvent);
-
 }
