@@ -100,10 +100,12 @@ function deleteFieldsWithRef(obj, ref) {
   //전체복사 버튼
   allCopy.addEventListener('click',() => {
     const allData = [...document.querySelectorAll('#faker_list pre')].map(e => JSON.parse(e.textContent));
-    console.log(allData);
-    navigator.clipboard.writeText(JSON.stringify(allData, null, 2));
-    // alert('전체 복사 완료되었습니다.');
-    alert('숭배..... ?');
+    if(allData.length > 0) {
+      navigator.clipboard.writeText(JSON.stringify(allData, null, 2));
+      alert('전체 복사 완료되었습니다.');
+    } else {
+      alert('복사할 데이터가 없습니다.')
+    }
   });
 
   function inputValueCopy(){
