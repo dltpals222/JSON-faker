@@ -49,37 +49,39 @@ function deleteFieldsWithRef(obj, ref) {
   }
 }
   
-  function generateClickEvent() {
-    while (fakerList.firstChild) {
-      fakerList.firstChild.remove();
-    };
-    if (!schema) {
-      alert('JSON 파일 혹은 내용이 없습니다.');
-      return;
-    }
-
-    schema = JSON.parse(JSON.stringify(originalSchema))
-
-    if (cData.checked) {
-      if (schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length > 0) delete schema.definitions.CustomDataType
-      deleteFieldsWithRef(schema, '#/definitions/CustomDataType')
-      delete schema.properties.customData;
-    }
-    let loopNumber = nCount.valueAsNumber ? nCount.valueAsNumber : 1;
-    let promises = [];
-    for (let i = 1; i <= loopNumber; i++) {
-      let promise = JSONSchemaFaker.resolve(schema).then(res => {
-        let element = document.createElement('li');
-        element.innerHTML = '<div style="display:flex; justify-content: space-between;height:1.6em;"><div>' + i + `번째</div><div id="alertMessage${i}" class="fade-in-out" style="display:none;">복사되었습니다.</div> <button type="button">복사</button></div><pre style="border:2px solid green;">` + JSON.stringify(res, null, 2) + `</pre>`
-        fakerList.appendChild(element);
-      })
-      promises.push(promise);
-    }
-
-    Promise.all(promises).then(() => {
-      inputValueCopy()
-    })
+// 생성버튼
+function generateClickEvent() {
+  console.log(schema);
+  while (fakerList.firstChild) {
+    fakerList.firstChild.remove();
+  };
+  if (!schema) {
+    alert('JSON 파일 혹은 내용이 없습니다.');
+    return;
   }
+
+  schema = JSON.parse(JSON.stringify(originalSchema))
+
+  if (cData.checked) {
+    if (schema.definitions.CustomDataType && Object.keys(schema.definitions.CustomDataType).length > 0) delete schema.definitions.CustomDataType
+    deleteFieldsWithRef(schema, '#/definitions/CustomDataType')
+    delete schema.properties.customData;
+  }
+  let loopNumber = nCount.valueAsNumber ? nCount.valueAsNumber : 1;
+  let promises = [];
+  for (let i = 1; i <= loopNumber; i++) {
+    let promise = JSONSchemaFaker.resolve(schema).then(res => {
+      let element = document.createElement('li');
+      element.innerHTML = '<div style="display:flex; justify-content: space-between;height:1.6em;"><div>' + i + `번째</div><div id="alertMessage${i}" class="fade-in-out" style="display:none;">복사되었습니다.</div> <button type="button">복사</button></div><pre style="border:2px solid green;">` + JSON.stringify(res, null, 2) + `</pre>`
+      fakerList.appendChild(element);
+    })
+    promises.push(promise);
+  }
+
+  Promise.all(promises).then(() => {
+    inputValueCopy()
+  })
+}
   
 
   // JSON 내용 수정 버튼
@@ -94,8 +96,13 @@ function deleteFieldsWithRef(obj, ref) {
     const resultOutputInnerPre = document.querySelector("#resultOutput > pre");
     resultOutput.setAttribute('contenteditable','false');
     if(resultOutputInnerPre) resultOutputInnerPre.style.backgroundColor = '#000';
-    schema = JSON.parse(JSON.stringify(resultOutput.value));
+    try {
+      schema = JSON.parse(resultOutputInnerPre.textContent); 
+    } catch (e) {
+      alert('JSON 형식이 유효하지 않습니다');
+    }
   });
+  
 
   //전체복사 버튼
   allCopy.addEventListener('click',() => {
